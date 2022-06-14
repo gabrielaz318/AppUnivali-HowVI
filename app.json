@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Univali",
+    "slug": "univali",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#005D99"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "ios": {
+      "bundleIdentifier": "com.gabrielazevedo.howviunivali",
+      "buildNumber": "1.0.0",
+      "icon": "./assets/icon.png"
+    },
+    "android": {
+      "package": "com.gabrielazevedo.howviunivali",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#005D99"
+      },
+      "versionCode": 1
+    }
+  }
+}
