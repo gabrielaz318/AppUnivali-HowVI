@@ -12,7 +12,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#005D99"
+      "backgroundColor": "#DDE3F0"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -26,7 +26,7 @@
       "package": "com.gabrielazevedo.howviunivali",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#005D99"
+        "backgroundColor": "#DDE3F0"
       },
       "versionCode": 1
     }
