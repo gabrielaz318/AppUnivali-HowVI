@@ -1,6 +1,7 @@
 // Cores utilizadas no app
 export default {
     colors: {
+        white_300: '#ffffff67',
         white: '#DDE3F0',
         black: '#000',
         black_800: '#333',

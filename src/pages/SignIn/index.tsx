@@ -17,8 +17,10 @@ import {
 
 import LogoLargePng from "../../assets/logo_large_blue.png"; 
 import { Alert, TextInput } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
 
 export function SignIn() {
+    const { signIn } = useAuth();
     const userInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const [user, setUser] = useState('');
@@ -33,11 +35,7 @@ export function SignIn() {
             Alert.alert("Campo não preenchido", "Digite seu usuário e senha corretamente para realizar seu login");
             return
         }
-        if(user.trim() !== 'admin' && password.trim() !== '12345') {
-            Alert.alert("Acesso negado", "As credenciais informadas são inválidas.");
-            return
-        }
-        Alert.alert("Bem Vindo")
+        signIn(user, password);
     }
 
     return (

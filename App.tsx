@@ -15,6 +15,8 @@ import theme from './src/styles/theme';
 import { Routes } from './src/routes';
 import { View } from 'react-native';
 import { ThemeProvider } from 'styled-components';
+import { AuthProvider } from './src/hooks/useAuth';
+import { DatabaseProvider } from './src/hooks/useDatabase';
 
 export default function App() {
 	// Função executado em toda abertura do App
@@ -59,7 +61,11 @@ export default function App() {
 		<ThemeProvider theme={theme}>
 			<StatusBar translucent style='dark' />
 			<View onLayout={onLayoutRootView} style={{ flex: 1 }}>
-				<Routes/>
+				<AuthProvider>
+					<DatabaseProvider>
+						<Routes/>
+					</DatabaseProvider>
+				</AuthProvider>
 			</View>
 		</ThemeProvider>
 	);
