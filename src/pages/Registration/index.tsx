@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FlatList } from 'react-native';
 import { useTheme } from 'styled-components';
@@ -12,25 +13,30 @@ import {
 
 const buttons = [
     {
-        name: "Adicionar Sala",
+        name: "Cadastrar Sala",
         key: "add.class"
     },
     {
-        name: "Adicionar Professor",
+        name: "Cadastrar Professor",
         key: "add.teacher"
     },
     {
-        name: "Adicionar Aluno",
+        name: "Cadastrar Aluno",
         key: "add.student"
     },
     {
-        name: "Adicionar Aula",
+        name: "Cadastrar Aula",
         key: "add.lesson"
     },
 ]
 
 export function Registration() {
     const theme = useTheme();
+    const navigation = useNavigation();
+
+    function handleNavigate(key: string, title: string) {
+        navigation.navigate("Form", { key, title, type: key });
+    }
 
     return (
         <Container>
@@ -43,16 +49,16 @@ export function Registration() {
                     renderItem={({ item }) => (
                         <ListItemWithButtons 
                             title={item.name}
+                            keyProp={item.key}
                             firstIconName="plus"
                             firstIconColor={theme.colors.black}
-                            firstIconAction={()=>{}}
+                            firstIconAction={handleNavigate}
                         />
                     )}
                     ItemSeparatorComponent={() => (
                         <Divider />
                     )}
                 />
-
             </Content>
         </Container>
     );

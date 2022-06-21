@@ -19,12 +19,12 @@ export const Container = styled.View`
 `;
 
 export const Title = styled.Text`
-    font-size: ${RFValue(23)}px;
+    font-size: ${RFValue(21)}px;
     color: ${({ theme }) => theme.colors.white};
     font-family: ${({ theme }) => theme.fonts.roboto_500};
     text-align: center;
 
-    padding-top: 2px;
+    padding-top: 4px;
 `;
 
 export const Logo = styled.Image`

@@ -13,15 +13,17 @@ interface IListItemWithButtons {
     firstIconName: keyof typeof Feather.glyphMap;
     firstIconSize?: number;
     firstIconColor: string;
-    firstIconAction: () => void;
+    firstIconAction: (key: string, title: string) => void;
     secondIconName?: keyof typeof Feather.glyphMap;
     secondIconColor?: string;
     secondIconSize?: number;
-    secondIconAction?: () => void;
+    secondIconAction?: (key: string) => void;
+    keyProp: string;
 }
 
 export function ListItemWithButtons({
     title,
+    keyProp,
     firstIconName,
     firstIconColor,
     firstIconSize,
@@ -29,20 +31,28 @@ export function ListItemWithButtons({
     secondIconName,
     secondIconColor,
     secondIconSize,
-    secondIconAction
+    secondIconAction,
 }: IListItemWithButtons) {
+    function handlePressFirstButton() {
+        firstIconAction(keyProp, title);
+    }
+
+    function handlePressSecondButton() {
+        secondIconAction(keyProp);
+    }
+
     return (
         <Container>
             <Title>{title}</Title>
             <ButtonsWrapper>
-                {!!secondIconName && <Button>
+                {!!secondIconName && <Button onPress={handlePressSecondButton}>
                     <Feather 
                         name={secondIconName}
                         size={!!secondIconSize ? secondIconSize : 28}
                         color={secondIconColor}
                     />
                 </Button>}
-                <Button style={{ marginLeft: 8 }}>
+                <Button style={{ marginLeft: 8 }} onPress={handlePressFirstButton}>
                     <Feather 
                         name={firstIconName}
                         size={!!firstIconSize ? firstIconSize : 28}

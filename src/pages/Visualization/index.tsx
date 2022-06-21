@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FlatList } from 'react-native';
 import { useTheme } from 'styled-components';
@@ -31,6 +32,11 @@ const buttons = [
 
 export function Visualization() {
     const theme = useTheme();
+    const navigation = useNavigation();
+
+    function handleNavigate(key: string, title: string) {
+        navigation.navigate("ViewCategory", { key, title, type: key });
+    }
 
     return (
         <Container>
@@ -43,9 +49,10 @@ export function Visualization() {
                     renderItem={({ item }) => (
                         <ListItemWithButtons
                             title={item.name}
+                            keyProp={item.key}
                             firstIconName="chevron-right"
                             firstIconColor={theme.colors.black}
-                            firstIconAction={()=>{}}
+                            firstIconAction={handleNavigate}
                         />
                     )}
                     ItemSeparatorComponent={() => (

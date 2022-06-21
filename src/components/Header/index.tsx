@@ -17,12 +17,12 @@ interface IHeader {
     actionButton?: () => void;
 }
 
-export function Header({ title, backButton = false }: IHeader) {
+export function Header({ title, backButton = false, actionButton }: IHeader) {
     const theme = useTheme();
 
     return (
         <Container>
-            {backButton ? <BackButton>
+            {backButton ? <BackButton onPress={actionButton}>
                 <Feather 
                     name="chevron-left"
                     size={30}
