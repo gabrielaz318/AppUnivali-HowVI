@@ -5,6 +5,7 @@ import { useTheme } from 'styled-components';
 import { Divider } from '../../components/Divider';
 import { Header } from '../../components/Header';
 import { ListItemWithButtons } from '../../components/ListItemWithButtons';
+import { useAuth } from '../../hooks/useAuth';
 
 import {
     Container,
@@ -19,28 +20,22 @@ const buttons = [
     {
         name: "Cadastrar Professor",
         key: "add.teacher"
-    },
-    {
-        name: "Cadastrar Aluno",
-        key: "add.student"
-    },
-    {
-        name: "Cadastrar Aula",
-        key: "add.lesson"
-    },
+    }
 ]
 
 export function Registration() {
     const theme = useTheme();
+    const { signOut } = useAuth();
     const navigation = useNavigation();
 
+    // Função para navegar para tela de cadastro de um item
     function handleNavigate(key: string, title: string) {
         navigation.navigate("Form", { key, title, type: key });
     }
 
     return (
         <Container>
-            <Header title="Cadastros" />
+            <Header actionButton={signOut} exitButton title="Cadastros" />
 
             <Content>
                 <FlatList 

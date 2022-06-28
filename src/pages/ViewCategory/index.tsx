@@ -9,6 +9,7 @@ import { ListItemWithButtons } from '../../components/ListItemWithButtons';
 import {
     Container, 
     Content,
+    TextEmptyList,
 } from './styles';
 import { useDatabase } from '../../hooks/useDatabase';
 import id from 'date-fns/esm/locale/id/index.js';
@@ -32,9 +33,12 @@ export function ViewCategory() {
     const [list, setList] = useState<IList[]>([] as IList[])
     const navigation = useNavigation();
 
+    // Função para voltar
     function handleBack() {
         navigation.goBack();
     }
+    
+    // Função para remover um item
     function handleRemoveItem(key: string) {
         Alert.alert(
             "Atenção",
@@ -63,10 +67,12 @@ export function ViewCategory() {
         );
     }
 
+    // Fução para ir até a tela de atualizar um item
     function handleEditItem(keyInternal: string) {
         navigation.navigate("Form", { key: keyInternal, title: "Atualizar", type: key });
     }
 
+    // Função para recuperar os itens de um determinado tipo
     async function getInfo() {
         let response
         switch (key) {
@@ -84,6 +90,7 @@ export function ViewCategory() {
         }
     }
 
+    // Função executado toda vez que o usuário acessa a tela
     useFocusEffect(
         useCallback(() => {
           getInfo();
@@ -113,6 +120,7 @@ export function ViewCategory() {
 
                         />
                     )}
+                    ListEmptyComponent={() => <TextEmptyList>Nenhum registro encontrado</TextEmptyList>}
                     ItemSeparatorComponent={() => (
                         <Divider />
                     )}

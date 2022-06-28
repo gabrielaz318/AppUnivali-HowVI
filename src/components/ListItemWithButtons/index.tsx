@@ -33,14 +33,17 @@ export function ListItemWithButtons({
     secondIconSize,
     secondIconAction,
 }: IListItemWithButtons) {
+    // Função quando aperta o primeiro botão
     function handlePressFirstButton() {
         firstIconAction(keyProp, title);
     }
 
+    // Função quando aperta o segundo botão
     function handlePressSecondButton() {
         secondIconAction(keyProp);
     }
 
+    // Componente essencial para ser o item das lista, cutomizavel com botoes e função dinamicas
     return (
         <Container>
             <Title>{title}</Title>

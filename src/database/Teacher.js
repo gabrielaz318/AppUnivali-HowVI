@@ -3,14 +3,17 @@ import db from "./SQLiteDatabase";
 db.transaction((tx) => {
 
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
-  // tx.executeSql("DROP TABLE messages;");
+  // Remover tabela
+  // tx.executeSql("DROP TABLE teachers;");
   //<<<<<<<<<<<<<<<<<<<<<<<< USE ISSO APENAS DURANTE OS TESTES!!! >>>>>>>>>>>>>>>>>>>>>>>
 
+  // Função para criar tabela
   tx.executeSql(
-    "CREATE TABLE teachers (id INTEGER PRIMARY KEY AUTOINCREMENT, fk_id_class INT DEFAULT NULL, nome TEXT, usuario TEXT, senha TEXT, materia TEXT);"
+    "CREATE TABLE teachers (id INTEGER PRIMARY KEY AUTOINCREMENT, fk_id_class INT DEFAULT NULL, nome TEXT, usuario TEXT UNIQUE, senha TEXT, materia TEXT);"
   );
 });
 
+// Função SQLite para criar um item
 const create = (obj) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -29,6 +32,7 @@ const create = (obj) => {
   });
 };
 
+// Função SQLite para listar todos os item
 const findAll = () => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -47,6 +51,7 @@ const findAll = () => {
   });
 };
 
+// Função SQLite para procurar um item pelo seu id
 const findById = (id) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -65,6 +70,45 @@ const findById = (id) => {
   });
 };
 
+// Função SQLite para filtar os registro por um nome de usuário
+const verifyUserName = (usuario) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      //comando SQL modificável
+      tx.executeSql(
+        "SELECT * FROM teachers WHERE usuario = ?;",
+        [usuario],
+        //-----------------------
+        (_, { rows }) => {
+          if (rows.length > 0) resolve(rows._array[0]);
+          else resolve(); // nenhum registro encontrado
+        },
+        (_, error) => reject(error) // erro interno em tx.executeSql
+      );
+    });
+  });
+};
+
+// Função SQLite função para verificar se um login existe no DB
+const findLogin = (obj) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      //comando SQL modificável
+      tx.executeSql(
+        "SELECT * FROM teachers WHERE usuario = ? AND senha = ?;",
+        [obj.usuario, obj.senha],
+        //-----------------------
+        (_, { rows }) => {
+          if (rows.length > 0) resolve(rows._array[0]);
+          else reject("Obj not found"); // nenhum registro encontrado
+        },
+        (_, error) => reject(error) // erro interno em tx.executeSql
+      );
+    });
+  });
+};
+
+// Função SQLite para atualizar um item
 const update = (obj) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -74,11 +118,7 @@ const update = (obj) => {
         [obj.nome, obj.usuario, obj.senha, obj.materia, obj.id],
         //-----------------------
         (_, { rows }) => {
-          if (rows.length > 0) {
-            resolve(rows._array)
-          } else {
-            reject([]) // nenhum registro encontrado
-          }
+            resolve()
         },
         (_, error) => reject(error) // erro interno em tx.executeSql
       );
@@ -86,6 +126,7 @@ const update = (obj) => {
   });
 };
 
+// Função SQLite para remover um item
 const remove = (id) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -111,6 +152,8 @@ export default {
     create,
     findAll,
     findById,
+    findLogin,
+    verifyUserName,
     update,
-    remove
+    remove,
 };

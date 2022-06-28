@@ -8,6 +8,7 @@ const { Navigator, Screen } = createNativeStackNavigator();
 
 export function VisualizationRoutes() {
 	return (
+        // Container das rotas de visualização
         <Navigator
             screenOptions={{
                 headerShown: false  

@@ -7,6 +7,7 @@ const { Navigator, Screen } = createNativeStackNavigator();
 
 export function RegistrationRoutes() {
 	return (
+        // Container das rotas de cadastro
         <Navigator
             screenOptions={{
                 headerShown: false  

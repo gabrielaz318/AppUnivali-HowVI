@@ -1,9 +1,11 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { Alert, Platform } from 'react-native';
 import { Header } from '../../components/Header';
 import { InputFormGroup } from '../../components/InputFormGroup';
-import { CreateTeacherProps } from '../../DTO/teacher';
+import { ReturnClassById } from '../../DTO/class';
+import { CreateTeacherProps, UpdateTeacherProps } from '../../DTO/teacher';
 import { useDatabase } from '../../hooks/useDatabase';
 
 import {
@@ -39,31 +41,56 @@ export function Form() {
     const [teacherSubjects, setTeacherSubjects] = useState('');
     const [classNumber, setClassNumber] = useState('');
     
+    // Função para enviar dados para suas determinadas funções:
+    // - É possível criar um item para qualquer tipo
+    // - É possível atualizar determinado item de um tipo
     async function send() {
-        if(type == 'add.class' || type == 'view.class') {
-            if(title == 'Atualizar') {
-                await updateClass(classNumber, +key)
-            } else {
-                await createClass(classNumber);
+        try {
+            let success = false;
+            if(type == 'add.class' || type == 'view.class') {
+                if(classNumber.trim().length == 0) {
+                    Alert.alert('Atenção', 'O campo com o número da sala não pode estar vazio.');
+                    return
+                }
+                if(title == 'Atualizar') {
+                    success = await updateClass(classNumber, +key)
+                } else {
+                    success = await createClass(classNumber);
+                }
+    
+            } else if (type == 'view.teacher' || type == 'add.teacher') {
+                if(teacherName.trim().length == 0 || teacherPassword.trim().length == 0 || teacherUser.trim().length == 0 || teacherSubjects.trim().length == 0) {
+                    Alert.alert('Atenção', 'Preencha todos os campos antes de entar salvar os dados');
+                    return
+                }
+                if(title == 'Atualizar') {
+                    success = await updateTeacher({ id: key, name: teacherName, password: teacherPassword, user: teacherUser, subjects: teacherSubjects })
+                } else {
+                    success = await createTeacher({ name: teacherName, password: teacherPassword, user: teacherUser, subjects: teacherSubjects })
+                }
+            }
+            if(success) {
+                navigation.goBack();
+            }
+        } catch (error) {
+            if(error === 'user_exist' || error === 'class_exist') {
+                return
             }
 
-        } else if (type == 'view.teacher' || type == 'add.teacher') {
-            if(title == 'Atualizar') {
-                await updateTeacher({ id: key, name: teacherName, password: teacherPassword, user: teacherUser, subjects: teacherSubjects })
-            } else {
-                await createTeacher({ name: teacherName, password: teacherPassword, user: teacherUser, subjects: teacherSubjects })
-            }
+            Alert.alert('Erro', 
+            title == 'Atualizar' ? 'Houve um erro durante a atualização.': 'Houve um erro durante a criação');
         }
         
-        navigation.goBack();
     }
 
+    // Função para voltar para tela anterior
     function handleBack() {
         navigation.goBack();
     }
 
+    // Função para recuperar as informações quando for necessário atualizar um registro
     async function getInfoUpdate() {
-        let response;
+        let response: UpdateTeacherProps | ReturnClassById;
         switch (type) {
             case 'view.teacher':
                 response = await findTeacherById(+key);
@@ -74,7 +101,6 @@ export function Form() {
                 break;
             case 'view.class':
                 response = await findClassById(+key);
-                console.log(response)
                 setClassNumber(String(response.name));
                 break;
         
@@ -82,6 +108,8 @@ export function Form() {
                 break;
         }
     }
+
+    // Função executada ao abrir a tela
     useEffect(() => {
         if(title == 'Atualizar') {
             getInfoUpdate()

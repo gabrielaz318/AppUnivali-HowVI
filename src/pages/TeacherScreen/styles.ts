@@ -34,3 +34,11 @@ export const TotalNumber = styled.Text`
     font-size: ${RFValue(16)}px;
     font-family: ${({ theme }) => theme.fonts.roboto_500};
 `;
+
+export const Greetings = styled.Text`
+    color: ${({ theme }) => theme.colors.black_800};
+    font-size: ${RFValue(20)}px;
+    font-family: ${({ theme }) => theme.fonts.roboto_500};
+    margin-top: 32px;
+    text-align: center;
+`;

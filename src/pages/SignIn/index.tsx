@@ -13,29 +13,40 @@ import {
     Footer,
     Credits,
     TextButton,
+    ButtonCheckbox,
+    ContainerCheckbox,
+    TextCheckbox
 } from './styles';
 
 import LogoLargePng from "../../assets/logo_large_blue.png"; 
 import { Alert, TextInput } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
+import { Feather } from '@expo/vector-icons';
 
 export function SignIn() {
     const { signIn } = useAuth();
     const userInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const [user, setUser] = useState('');
+    const [checkbox, setCheckbox] = useState(false);
     const [password, setPassword] = useState('');
 
+    // Função para "focar" no input de senha
     function handleFocuInputPassword() {
         passwordInputRef.current?.focus();
     }
 
-    function handleAccess() {
+    // Função para realizar o acesso no app
+    async function handleAccess() {
         if(user.trim().length == 0 || password.trim().length == 0) {
             Alert.alert("Campo não preenchido", "Digite seu usuário e senha corretamente para realizar seu login");
             return
         }
-        signIn(user, password);
+        try {
+            await signIn(user, password, checkbox);
+        } catch (error) {
+            Alert.alert('Acesso negado', 'Verifique o usuário e senha utilizados e tente novamente.');
+        }
     }
 
     return (
@@ -66,6 +77,24 @@ export function SignIn() {
                         password={true}
                         onSubmiting={handleAccess}
                     />
+                    <ContainerCheckbox>
+                        <ButtonCheckbox activeOpacity={.7} onPress={() => setCheckbox(oldState => !oldState)}>
+                            {
+                                checkbox ?
+                                <Feather 
+                                    name="check-square"
+                                    size={26}
+                                    color="#000"
+                                /> :
+                                <Feather 
+                                    name="square"
+                                    size={26}
+                                    color="#000"
+                                />
+                            }
+                        </ButtonCheckbox>
+                        <TextCheckbox>Sou aluno</TextCheckbox>
+                    </ContainerCheckbox>
                     <ButtonSignin onPress={handleAccess} activeOpacity={.7}>
                         <TextButton>Entrar</TextButton>
                     </ButtonSignin>

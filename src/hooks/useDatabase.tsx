@@ -4,7 +4,7 @@ import {
     useState, 
     createContext
 } from "react";
-import { InteractionManager } from "react-native";
+import { Alert, InteractionManager } from "react-native";
 
 import Class from "../database/Class";
 import Teacher from "../database/Teacher";
@@ -19,14 +19,14 @@ interface DatabaseProviderProps {
 }
 
 interface DatabaseContextDataProps {
-    createTeacher: (data: CreateTeacherProps) => Promise<void>;
-    updateTeacher: (data: UpdateTeacherProps) => Promise<void>;
+    createTeacher: (data: CreateTeacherProps) => Promise<boolean>;
+    updateTeacher: (data: UpdateTeacherProps) => Promise<boolean>;
     findAllTeachers: () => Promise<ReturnFindAllTeachers[]>;
     removeTeacher: (id: number) => Promise<void>;
     findTeacherById: (id: number) => Promise<UpdateTeacherProps>;
 
-    createClass: (number: string) => Promise<void>;
-    updateClass: (number: string, id: number) => Promise<void>;
+    createClass: (number: string) => Promise<boolean>;
+    updateClass: (number: string, id: number) => Promise<boolean>;
     findAllClass: () => Promise<ReturnFindAllClass[]>;
     findClassById: (id: number) => Promise<ReturnClassById>;
     removeClass: (id: number) => Promise<void>;
@@ -34,24 +34,39 @@ interface DatabaseContextDataProps {
 
 function DatabaseProvider({ children }: DatabaseProviderProps) {
 
+    // Função para criar um professor
     async function createTeacher(data: CreateTeacherProps) {
         try {
+            const verifyTeacher = await Teacher.verifyUserName(data.user);
+            if(!!verifyTeacher?.usuario) {
+                Alert.alert('Atenção', 'Este nome de usuário já está sendo utilizado.');
+                throw new Error('user_exist');
+                return
+            }
             await Teacher.create({ nome: data.name, usuario: data.user, senha: data.password, materia: data.subjects })
-            return
+            return true
         } catch (error) {
-            console.log(error)
+            
         }
     }
 
+    // função para atualizar um professor
     async function updateTeacher(data: UpdateTeacherProps) {
         try {
+            const verifyTeacher = await Teacher.verifyUserName(data.user);
+            if(!!verifyTeacher?.usuario && String(verifyTeacher.id ) !== String(data.id)) {
+                Alert.alert('Atenção', 'Este nome de usuário já está sendo utilizado.');
+                throw new Error('user_exist');
+                return
+            }
             await Teacher.update({ id: data.id ,nome: data.name, usuario: data.user, senha: data.password, materia: data.subjects })
-            return
+            return true
         } catch (error) {
             console.log(error)
         }
     }
 
+    // Função para listar todos os professores
     async function findAllTeachers() {
         try {
             const response = await Teacher.findAll();
@@ -66,6 +81,7 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
         }
     }
 
+    // Função para procurar um professor pelo id
     async function findTeacherById(id: number) {
         try {
             const response = await Teacher.findById(id);
@@ -83,6 +99,7 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
         }
     }
 
+    // Função para remover um professor
     async function removeTeacher(id: number) {
         try {
             await Teacher.remove(id)
@@ -90,32 +107,44 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
         } catch (error) {
             console.log(error)
         }
-    }
+    }   
 
+    // Função para criar uma sala
     async function createClass(number: string) {
-        console.log(createClass)
         try {
+            const verifyClass = await Class.verifyClassExist(number);
+            if(!!verifyClass?.numero) {
+                Alert.alert('Atenção', 'Este número de sala já está sendo utilizado.');
+                throw new Error('class_exist');
+                return
+            }
             await Class.create({numero: number});
-            return
+            return true
         } catch (error) {
             
         }
     }
 
+    // Função para atualizar o registro de uma sala
     async function updateClass(number: string, id: number) {
         try {
-            console.log(number, id)
+            const verifyClass = await Class.verifyClassExist(number);
+            if(!!verifyClass?.numero && verifyClass.id != id) {
+                Alert.alert('Atenção', 'Este número de sala já está sendo utilizado.');
+                throw new Error('class_exist');
+                return
+            }
             await Class.update({numero: number, id});
-            return
+            return true
         } catch (error) {
-            
+            console.log(error)
         }
     }
 
+    // Função para listar todas as salas
     async function findAllClass() {
         try {
             const response = await Class.findAll();
-            console.log(response)
             if(response instanceof Array) {
                 const responseFormatted = response.map(item => {return{ name: item.numero, key: item.id }});
                 return responseFormatted;
@@ -127,6 +156,7 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
         }
     }
 
+    // Função para procurar uma sala pelo seu id
     async function findClassById(id: number) {
         try {
             const response = await Class.findById(id);
@@ -136,6 +166,7 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
         }
     }
 
+    // Função para remover uma sala
     async function removeClass(id: number) {
         try {
             await Class.remove(id);

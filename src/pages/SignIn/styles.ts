@@ -69,3 +69,22 @@ export const Credits = styled.Text`
 
     margin-bottom: 20px;
 `;
+
+export const ContainerCheckbox = styled.View`
+    flex-direction: row;
+    align-items: center;
+
+    margin-bottom: 16px;
+`;
+
+export const ButtonCheckbox = styled.TouchableOpacity`
+
+`;
+
+export const TextCheckbox = styled.Text`
+    margin-left: 8px;
+
+    color: ${({ theme }) => theme.colors.black_800};
+    font-size: ${RFValue(13)}px;
+    font-family: ${({ theme }) => theme.fonts.roboto_400};
+`;

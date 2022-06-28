@@ -12,7 +12,7 @@ const { Navigator, Screen } = createBottomTabNavigator();
 export function TabsRoutes() {
     const theme = useTheme();
     return (
-        // COmponente pai da navegação e das telas
+        // Componente pai da navegação e das telas
         <Navigator
             screenOptions={{
             headerShown: false,

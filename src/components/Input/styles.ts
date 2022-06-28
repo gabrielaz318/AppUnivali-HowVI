@@ -22,6 +22,4 @@ export const Label = styled.Text`
     font-size: ${RFValue(11.5)}px;
     font-family: ${({ theme }) => theme.fonts.roboto_400};
     text-align: right;
-
-    margin-bottom: 16px;
 `;

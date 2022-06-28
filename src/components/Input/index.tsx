@@ -16,10 +16,12 @@ interface IInput {
 }
  
 const Input = React.forwardRef<TextInput, IInput>(({ password = false, onSubmiting = ()=>{}, onChange, placeholder, label = null }, ref) => {
+    // Função que verifica se o usuário quer recuperar senha
     function handlePressLabel() {
         Alert.alert("Recuperar senha", "Entre em contato com a secretaria através do e-mail:\n\nsecretaria@univali.com.br");
     }
 
+    // Componente de input de login
     return (
         <>
             <Container

@@ -3,18 +3,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SignIn } from '../pages/SignIn';
 import { useAuth } from '../hooks/useAuth';
 import { TabsRoutes } from './tabs.routes';
-import { Form } from '../pages/Form';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { TeacherScreen } from '../pages/TeacherScreen';
 
-const { Navigator, Screen } = createNativeStackNavigator();
 
 export function Routes() {
 	const { user } = useAuth();
 
 	return (
+		// Container Pai que reune todas as telas e organiza a visualização do usuário de acordo com a permissão
 		<NavigationContainer>
-			{/* {!!user?.name ? <TabsRoutes /> : <SignIn />}  */}
-			<TabsRoutes />
+			{!!user ? 
+			user.permission == 1 ? <TabsRoutes /> : <TeacherScreen />
+			: <SignIn />} 
 		</NavigationContainer>
 	);
 }
