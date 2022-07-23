@@ -24,6 +24,10 @@ const buttons = [
         key: "view.class"
     },
     {
+        name: "Visualizar Alunos",
+        key: "view.student"
+    },
+    {
         name: "Visualizar Professores",
         key: "view.teacher"
     }
@@ -32,9 +36,9 @@ const buttons = [
 export function Visualization() {
     const theme = useTheme();
     const { signOut } = useAuth();
-    const { findAllClass, findAllTeachers } = useDatabase();
+    const { findAllClass, findAllTeachers, findAllStudents } = useDatabase();
     const navigation = useNavigation();
-    const [totals, setTotals] = useState({ teachers: 0, class: 0 });
+    const [totals, setTotals] = useState({ teachers: 0, class: 0, students: 0 });
 
     // Função para avancar para tela de situalização de um determinado tipo
     function handleNavigate(key: string, title: string) {
@@ -45,10 +49,12 @@ export function Visualization() {
     async function getTotals() {
         const allTeachers = await findAllTeachers();
         const allClass = await findAllClass();
+        const allStudents = await findAllStudents();
 
         setTotals({ 
             teachers: !!allTeachers ? allTeachers.length : 0,
-            class: !!allClass ? allClass.length : 0
+            class: !!allClass ? allClass.length : 0,
+            students: !!allStudents ? allStudents.length : 0
          });
     }
 
@@ -89,6 +95,9 @@ export function Visualization() {
                     </TotalType>
                     <TotalType>
                         Total de Professores: <TotalNumber>{totals.teachers}</TotalNumber>
+                    </TotalType>
+                    <TotalType>
+                        Total de Alunos: <TotalNumber>{totals.students}</TotalNumber>
                     </TotalType>
                 </TotalsContainer>
             </Content>

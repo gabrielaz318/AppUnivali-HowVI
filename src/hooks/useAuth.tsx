@@ -6,6 +6,7 @@ import {
 } from "react";
 import { Alert } from "react-native";
 import Teacher from "../database/Teacher";
+import Student from "../database/Student";
 const AuthContext = createContext({} as AuthContextDataProps)
 
 interface AuthProviderProps {
@@ -28,11 +29,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null)
 
     // Método para realizar login
-    async function signIn(user: string, password: string, student: boolean) {
-        if(student) {
-            throw new Error();
-            return
-        }
+    async function signIn(user: string, password: string, student = false) {
 
         if(user.trim().toLowerCase() === 'admin' && password.trim() === '12345') {
             setUser({ name: 'admin', permission: 1 });
@@ -40,8 +37,13 @@ function AuthProvider({ children }: AuthProviderProps) {
         }
 
         try {
-            const responseTeacher = await Teacher.findLogin({ usuario: user, senha: password });
-            setUser({ name: responseTeacher.nome, permission: 2 });
+            if(student) {
+                const responseStudent = await Student.findLogin({ usuario: user.trim(), senha: password.trim() });
+                setUser({ name: responseStudent.nome, permission: 3 });
+            } else {
+                const responseTeacher = await Teacher.findLogin({ usuario: user.trim(), senha: password.trim() });
+                setUser({ name: responseTeacher.nome, permission: 2 });
+            }
         } catch (error) {
             throw new Error();
             return

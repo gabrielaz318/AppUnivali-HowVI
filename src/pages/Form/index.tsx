@@ -5,7 +5,8 @@ import { Alert, Platform } from 'react-native';
 import { Header } from '../../components/Header';
 import { InputFormGroup } from '../../components/InputFormGroup';
 import { ReturnClassById } from '../../DTO/class';
-import { CreateTeacherProps, UpdateTeacherProps } from '../../DTO/teacher';
+import { UpdateStudentProps } from '../../DTO/student';
+import { UpdateTeacherProps } from '../../DTO/teacher';
 import { useDatabase } from '../../hooks/useDatabase';
 
 import {
@@ -29,12 +30,18 @@ export function Form() {
         createClass, 
         findClassById, 
         updateClass, 
-        findTeacherById 
+        findStudentById,
+        findTeacherById,
+        updateStudent,
+        createStudent
     } = useDatabase();
     const navigation = useNavigation();
     const { params } = useRoute();
     const { key, title, type } = params as IParams;
     const heightBottomTabs = useBottomTabBarHeight();
+    const [studentName, setStudentName] = useState('');
+    const [studentUser, setStudentUser] = useState('');
+    const [studentPassword, setStudentPassword] = useState('');
     const [teacherName, setTeacherName] = useState('');
     const [teacherUser, setTeacherUser] = useState('');
     const [teacherPassword, setTeacherPassword] = useState('');
@@ -68,6 +75,17 @@ export function Form() {
                 } else {
                     success = await createTeacher({ name: teacherName, password: teacherPassword, user: teacherUser, subjects: teacherSubjects })
                 }
+
+            } else if (type == 'view.student' || type == 'add.student') {
+                if(studentName.trim().length == 0 || studentPassword.trim().length == 0 || studentUser.trim().length == 0) {
+                    Alert.alert('Atenção', 'Preencha todos os campos antes de tentar salvar os dados');
+                    return
+                }
+                if(title == 'Atualizar') {
+                    success = await updateStudent({ id: key, name: studentName, password: studentPassword, user: studentUser })
+                } else {
+                    success = await createStudent({ name: studentName, password: studentPassword, user: studentUser })
+                }
             }
             if(success) {
                 navigation.goBack();
@@ -90,7 +108,7 @@ export function Form() {
 
     // Função para recuperar as informações quando for necessário atualizar um registro
     async function getInfoUpdate() {
-        let response: UpdateTeacherProps | ReturnClassById;
+        let response: UpdateTeacherProps | ReturnClassById | UpdateStudentProps;
         switch (type) {
             case 'view.teacher':
                 response = await findTeacherById(+key);
@@ -98,6 +116,12 @@ export function Form() {
                 setTeacherUser(response.user);
                 setTeacherPassword(response.password);
                 setTeacherSubjects(response.subjects);
+                break;
+            case 'view.student':
+                response = await findStudentById(+key);
+                setStudentName(response.name);
+                setStudentUser(response.user);
+                setStudentPassword(response.password);
                 break;
             case 'view.class':
                 response = await findClassById(+key);
@@ -156,6 +180,28 @@ export function Form() {
                             inputType="default"
                             value={teacherSubjects}
                             onChangeText={setTeacherSubjects}
+                        />
+                    </>
+                }
+                {
+                    (key === "add.student" || type == 'view.student') && <>
+                        <InputFormGroup 
+                            label="Nome:"
+                            inputType="default"
+                            value={studentName}
+                            onChangeText={setStudentName}
+                        />
+                        <InputFormGroup 
+                            label="Usuário:"
+                            inputType="default"
+                            value={studentUser}
+                            onChangeText={setStudentUser}
+                        />
+                        <InputFormGroup 
+                            label="Senha:"
+                            inputType="default"
+                            value={studentPassword}
+                            onChangeText={setStudentPassword}
                         />
                     </>
                 }

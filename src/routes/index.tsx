@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SignIn } from '../pages/SignIn';
 import { useAuth } from '../hooks/useAuth';
 import { TabsRoutes } from './tabs.routes';
-import { TeacherScreen } from '../pages/TeacherScreen';
+import { UserScreen } from '../pages/UserScreen';
 
 
 export function Routes() {
@@ -12,8 +12,7 @@ export function Routes() {
 	return (
 		// Container Pai que reune todas as telas e organiza a visualização do usuário de acordo com a permissão
 		<NavigationContainer>
-			{!!user ? 
-			user.permission == 1 ? <TabsRoutes /> : <TeacherScreen />
+			{!!user ? user.permission == 1 ? <TabsRoutes /> : <UserScreen />
 			: <SignIn />} 
 		</NavigationContainer>
 	);

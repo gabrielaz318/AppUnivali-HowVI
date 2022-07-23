@@ -8,7 +8,9 @@ import { Alert, InteractionManager } from "react-native";
 
 import Class from "../database/Class";
 import Teacher from "../database/Teacher";
+import Student from "../database/Student";
 
+import { CreateStudentProps, UpdateStudentProps, ReturnFindAllStudents } from "../DTO/student";
 import { CreateTeacherProps, UpdateTeacherProps, ReturnFindAllTeachers } from "../DTO/teacher";
 import { ReturnClassById, ReturnFindAllClass } from "../DTO/class";
 
@@ -25,6 +27,12 @@ interface DatabaseContextDataProps {
     removeTeacher: (id: number) => Promise<void>;
     findTeacherById: (id: number) => Promise<UpdateTeacherProps>;
 
+    createStudent: (data: CreateStudentProps) => Promise<boolean>;
+    updateStudent: (data: UpdateStudentProps) => Promise<boolean>;
+    findAllStudents: () => Promise<ReturnFindAllStudents[]>;
+    removeStudent: (id: number) => Promise<void>;
+    findStudentById: (id: number) => Promise<UpdateStudentProps>;
+
     createClass: (number: string) => Promise<boolean>;
     updateClass: (number: string, id: number) => Promise<boolean>;
     findAllClass: () => Promise<ReturnFindAllClass[]>;
@@ -33,6 +41,9 @@ interface DatabaseContextDataProps {
 }
 
 function DatabaseProvider({ children }: DatabaseProviderProps) {
+
+
+    //? ------ PROFESSORES
 
     // Função para criar um professor
     async function createTeacher(data: CreateTeacherProps) {
@@ -50,7 +61,7 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
         }
     }
 
-    // função para atualizar um professor
+    // Função para atualizar um professor
     async function updateTeacher(data: UpdateTeacherProps) {
         try {
             const verifyTeacher = await Teacher.verifyUserName(data.user);
@@ -108,6 +119,87 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
             console.log(error)
         }
     }   
+
+    
+    //? ------ ALUNOS
+
+    // Função para criar um professor
+    async function createStudent(data: CreateStudentProps) {
+        try {
+            const verifyStudent = await Student.verifyUserName(data.user);
+            if(!!verifyStudent?.usuario) {
+                Alert.alert('Atenção', 'Este nome de usuário já está sendo utilizado.');
+                throw new Error('user_exist');
+                return
+            }
+            await Student.create({ nome: data.name, usuario: data.user, senha: data.password })
+            return true
+        } catch (error) {
+            
+        }
+    }
+
+    // Função para atualizar um professor
+    async function updateStudent(data: UpdateTeacherProps) {
+        try {
+            const verifyStudent = await Student.verifyUserName(data.user);
+            if(!!verifyStudent?.usuario && String(verifyStudent.id ) !== String(data.id)) {
+                Alert.alert('Atenção', 'Este nome de usuário já está sendo utilizado.');
+                throw new Error('user_exist');
+                return
+            }
+            await Student.update({ id: data.id ,nome: data.name, usuario: data.user, senha: data.password })
+            return true
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Função para listar todos os professores
+    async function findAllStudents() {
+        try {
+            const response = await Student.findAll();
+            if(response instanceof Array) {
+                const responseFormatted = response.map(item => {return{ name: item.nome, key: item.id }});
+                return responseFormatted;
+            } else {
+                return [response].map(item => {return{ name: item.nome, key: item.id }});
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Função para procurar um professor pelo id
+    async function findStudentById(id: number) {
+        try {
+            const response = await Student.findById(id);
+            return [response].map(item => {
+                return {
+                    id: item.id,
+                    name: item.nome,
+                    user: item.usuario,
+                    password: item.senha,
+                    subjects: item.materia
+                }
+            })[0]
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Função para remover um professor
+    async function removeStudent(id: number) {
+        try {
+            await Student.remove(id)
+            return
+        } catch (error) {
+            console.log(error)
+        }
+    }   
+
+
+    //? ------ SALAS
 
     // Função para criar uma sala
     async function createClass(number: string) {
@@ -183,6 +275,12 @@ function DatabaseProvider({ children }: DatabaseProviderProps) {
             findAllTeachers,
             removeTeacher,
             findTeacherById,
+
+            createStudent,
+            updateStudent,
+            findAllStudents,
+            removeStudent,
+            findStudentById,
 
             createClass,
             updateClass,

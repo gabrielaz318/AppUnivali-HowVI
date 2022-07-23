@@ -18,6 +18,10 @@ const buttons = [
         key: "add.class"
     },
     {
+        name: "Cadastrar Aluno",
+        key: "add.student"
+    },
+    {
         name: "Cadastrar Professor",
         key: "add.teacher"
     }

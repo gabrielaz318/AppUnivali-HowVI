@@ -27,7 +27,7 @@ interface IList {
 
 export function ViewCategory() {
     const theme = useTheme();
-    const { findAllTeachers, findAllClass, removeClass ,removeTeacher } = useDatabase();
+    const { findAllTeachers, findAllClass, removeClass ,removeTeacher, findAllStudents, removeStudent } = useDatabase();
     const { params } = useRoute();
     const { key, type, title } = params as IParams;
     const [list, setList] = useState<IList[]>([] as IList[])
@@ -42,7 +42,7 @@ export function ViewCategory() {
     function handleRemoveItem(key: string) {
         Alert.alert(
             "Atenção",
-            "Deseja realmente remover essa registro?",
+            "Deseja realmente remover esse registro?",
             [
               {
                 text: "Cancelar",
@@ -56,6 +56,10 @@ export function ViewCategory() {
                             break;
                         case 'view.teacher':
                             await removeTeacher(+key)
+                            getInfo();
+                            break;
+                        case 'view.student':
+                            await removeStudent(+key)
                             getInfo();
                             break;
                     
@@ -82,6 +86,10 @@ export function ViewCategory() {
                 break;
             case 'view.teacher':
                 response = await findAllTeachers();
+                setList(response);
+                break;
+            case 'view.student':
+                response = await findAllStudents();
                 setList(response);
                 break;
         

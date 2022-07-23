@@ -6,7 +6,7 @@ export const Container = styled.View`
     align-items: center;
 `;
 
-export const Content = styled.View`
+export const Content = styled.ScrollView`
     width: 85%;
 `;
 
@@ -39,6 +39,23 @@ export const Greetings = styled.Text`
     color: ${({ theme }) => theme.colors.black_800};
     font-size: ${RFValue(20)}px;
     font-family: ${({ theme }) => theme.fonts.roboto_500};
-    margin-top: 32px;
+    margin-top: 12px;
     text-align: center;
+    margin-bottom: 24px;
+`;
+
+export const TitleType = styled.Text`
+    color: ${({ theme }) => theme.colors.black_800};
+    font-size: ${RFValue(19)}px;
+    font-family: ${({ theme }) => theme.fonts.roboto_400};
+    margin-top: 12px;
+
+    margin-bottom: 24px;
+`;
+
+export const EmptyList = styled.Text`
+    color: ${({ theme }) => theme.colors.black_800};
+    font-size: ${RFValue(16)}px;
+    font-family: ${({ theme }) => theme.fonts.roboto_400};
+    margin-top: 8px;
 `;
